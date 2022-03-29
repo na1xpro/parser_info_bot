@@ -1,5 +1,7 @@
 from lxml import html
 import requests
+from loguru import logger
+
 
 url = (
     "https://www.olx.ua/elektronika/telefony-i-aksesuary/q-iphone-13/?search%5Bfilter_float_price%3Afrom%5D=10000&search%5Border%5D=created_at%3Adesc")
@@ -22,5 +24,7 @@ class Parser:
         file.close()
 
 bot = Parser("//a[@data-cy = 'listing-ad-title']/@href")
+logger.info("Parsing of all links from the site.")
 bot.find_link()
+logger.info("Adding links to a file.")
 bot.add_file_link()
