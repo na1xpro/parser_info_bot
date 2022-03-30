@@ -23,6 +23,23 @@ class Parser:
             file.write(index + '\n')
         file.close()
 
+    def checking_product_availability(self):
+        with open('text.txt', 'a+') as opened_file:
+            for l in self.find_links():
+                if l != opened_file:
+                    logger.warning("YES new LINK")
+                    opened_file.write(l)
+                else:
+                    logger.info('now new links')
+
+
+# end_list = open('end_list.txt','w')
+# listdir = open('listdir.txt')
+# order_set = set(open('order_fix.txt').readlines())
+
+# for line in listdir.readlines():
+#    if line in order_set:
+#        end_list.write(line)
 
 bot = Parser(
     "https://www.olx.ua/elektronika/telefony-i-aksesuary/q-iphone-13/?search%5Bfilter_float_price%3Afrom%5D=10000&search%5Border%5D=created_at%3Adesc",
@@ -32,3 +49,5 @@ logger.info("Parsing of all links from the site.")
 bot.find_links()
 logger.info("Adding links to a file.")
 bot.save_to_file_links()
+logger.info('Chek file in links')
+bot.checking_product_availability()
