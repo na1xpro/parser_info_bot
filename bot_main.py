@@ -2,7 +2,9 @@ from lxml import html
 from loguru import logger
 import requests
 
+from datetime import datetime
 
+now= datetime.now()
 class Parser:
     def __init__(self, url, xpath_link, xpath_price):
         self.link_xpath = xpath_link
@@ -38,10 +40,11 @@ class Parser:
 bot = Parser(
     "https://www.olx.ua/uk/list/q-iphone/", '//table[@id = "offers_table"]//td[@class = "offer  "]//table/@data-id',
     '//table[@id = "offers_table"]//td[@class = "offer  "]//p[@class = "price"]/strong/text()')
-logger.info("Parsing of all links from the site.")
+logger.info("Парсинг сылок и цен з сайта.")
 bot.find_links_and_price()
-logger.add("Adding links and prices to a file.")
+logger.info("Добавление сылок и цен в файл.")
 bot.save_to_file_links()
-logger.info("Links and prices have been added.")
-logger.info('Chek file in links')
+logger.info("Сылки и цены были добвленые.")
+logger.info('Проверка на наличие новых товаров')
 bot.checking_product_availability()
+logger.warning("Последнее обновление данных было "+str(now))
