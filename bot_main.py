@@ -1,16 +1,15 @@
-import time
-
 from lxml import html
 from loguru import logger
 import requests
-
 from datetime import datetime
+import time
+from bot_constants import constants
 
 
 class Parser:
     def __init__(self, url, xpath_link, xpath_price):
-        self.link_xpath = xpath_link
         self.url = url
+        self.link_xpath = xpath_link
         self.price_xpath = xpath_price
 
     def find_links_and_price(self):
@@ -24,7 +23,7 @@ class Parser:
         links, prices = self.find_links_and_price()
         with open('text.txt', 'w') as file:
             for lin, pri in zip(links, prices):
-                file.write(' ID  Товару - |' + lin + "| Цына товару " + pri + "\n")
+                file.write(f"ID  Товару - | {lin} | Ціна товару - {pri} \n")
         return file
 
     def checking_product_availability(self):
@@ -33,24 +32,22 @@ class Parser:
             links, prices = self.find_links_and_price()
             for lines, pricess in zip(links, prices):
                 if lines and pricess in a:
-                    logger.info("Не найденно новых товаров")
+                    logger.info("Не знайдено нових товарів.")
                 else:
                     self.save_to_file_links()
-                    logger.warning("Найденые новые твоары, были заменены в файле.")
+                    logger.warning("Знайдені нові товари, були замінені у файлі.")
 
 
-bot = Parser(
-    "https://www.olx.ua/uk/list/q-iphone/", '//table[@id = "offers_table"]//td[@class = "offer  "]//table/@data-id',
-    '//table[@id = "offers_table"]//td[@class = "offer  "]//p[@class = "price"]/strong/text()')
+bot = Parser(constants['URL'], constants['xpath_link'], constants['xpath_price'])
 
 while True:
     now = datetime.now()
-    logger.info("Парсинг сылок и цен з сайта.")
+    logger.info("Парсинг посилань та цін із сайту.")
     bot.find_links_and_price()
-    logger.info("Добавление сылок и цен в файл.")
+    logger.info("Додавання посилань та цін у файл.")
     bot.save_to_file_links()
-    logger.info("Сылки и цены были добвленые.")
-    logger.info('Проверка на наличие новых товаров')
+    logger.info("Посилання та ціни були додані до файлу.")
+    logger.info('Перевірка на наявність нового товару.')
     bot.checking_product_availability()
-    logger.warning("Последнее обновление данных было " + str(now))
+    logger.warning("Останнє оновлення даних було" + str(now))
     time.sleep(60)
