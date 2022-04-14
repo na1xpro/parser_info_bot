@@ -7,7 +7,7 @@ from bot_constants import constants
 
 
 class Parser:
-    def __init__(self, url, xpath_link, xpath_price):
+    def __init__(self, url, xpath_link, xpath_price, ):
         self.url = url
         self.link_xpath = xpath_link
         self.price_xpath = xpath_price
@@ -19,35 +19,45 @@ class Parser:
         price = parsed_body.xpath(self.price_xpath)
         return link, price
 
-    def save_to_file_links(self):
-        links, prices = self.find_links_and_price()
+    def save_to_file_links(self, find_links):
+        links, prices = find_links
         with open('text.txt', 'w') as file:
             for lin, pri in zip(links, prices):
                 file.write(f"ID  Товару - | {lin} | Ціна товару - {pri} \n")
-        return file
 
-    def checking_product_availability(self):
-        with open('text.txt', 'r+') as opened_file:
-            a = opened_file.read()
-            links, prices = self.find_links_and_price()
+    def chekinfile(self, data):
+        links, prices = data
+        with open('text.txt', 'w+') as file:
             for lines, pricess in zip(links, prices):
-                if lines and pricess in a:
+                if lines and pricess in file:
                     logger.info("Не знайдено нових товарів.")
                 else:
-                    self.save_to_file_links()
+
+                    file.write(f"ID  Товару - | {lines} | Ціна товару - {pricess} - НОВИЙ ТОВАР \n")
                     logger.warning("Знайдені нові товари, були замінені у файлі.")
 
 
 bot = Parser(constants['URL'], constants['xpath_link'], constants['xpath_price'])
-
 while True:
     now = datetime.now()
     logger.info("Парсинг посилань та цін із сайту.")
     bot.find_links_and_price()
     logger.info("Додавання посилань та цін у файл.")
-    bot.save_to_file_links()
+    bot.save_to_file_links(bot.find_links_and_price())
     logger.info("Посилання та ціни були додані до файлу.")
     logger.info('Перевірка на наявність нового товару.')
-    bot.checking_product_availability()
+    bot.chekinfile(bot.find_links_and_price())
     logger.warning("Останнє оновлення даних було" + str(now))
-    time.sleep(60)
+    time.sleep(3)
+
+# class Foo(object):
+#     def method1(self):
+#         pass
+#
+#
+#     def method2(self, method):
+#         return method()
+#
+#
+# foo = Foo()
+# foo.method2(foo.method1)
