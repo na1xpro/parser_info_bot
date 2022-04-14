@@ -27,12 +27,12 @@ class Parser:
 
     def chekinfile(self, data):
         links, prices = data
-        with open('text.txt', 'w+') as file:
+        with open('text.txt', 'r+') as file:
+            a = file.read()
             for lines, pricess in zip(links, prices):
-                if lines and pricess in file:
+                if lines and pricess in a:
                     logger.info("Не знайдено нових товарів.")
                 else:
-
                     file.write(f"ID  Товару - | {lines} | Ціна товару - {pricess} - НОВИЙ ТОВАР \n")
                     logger.warning("Знайдені нові товари, були замінені у файлі.")
 
@@ -48,16 +48,4 @@ while True:
     logger.info('Перевірка на наявність нового товару.')
     bot.chekinfile(bot.find_links_and_price())
     logger.warning("Останнє оновлення даних було" + str(now))
-    time.sleep(3)
-
-# class Foo(object):
-#     def method1(self):
-#         pass
-#
-#
-#     def method2(self, method):
-#         return method()
-#
-#
-# foo = Foo()
-# foo.method2(foo.method1)
+    time.sleep(60)
