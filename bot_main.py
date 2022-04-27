@@ -33,26 +33,6 @@ class Parser:
             sql.execute("INSERT INTO product VALUES (?,?)", (ind, prices))
         db.commit()
 
-
-
-# def save_to_file_links(self, find_links):
-#     links, prices = find_links
-#     with open('text.txt', 'w') as file:
-#         for lin, pri in zip(links, prices):
-#             file.write(f"ID  Товару - | {lin} | Ціна товару - {pri} \n")
-#
-# def chekinfile(self, data):
-#     links, prices = data
-#     with open('text.txt', 'r+') as file:
-#         a = file.read()
-#         for lines, pricess in zip(links, prices):
-#             if lines and pricess in a:
-#                 logger.info("Не знайдено нових товарів.")
-#             else:
-#                 file.write(f"ID  Товару - | {lines} | Ціна товару - {pricess} - НОВИЙ ТОВАР \n")
-#                 logger.warning("Знайдені нові товари, були замінені у файлі.")
-#
-
 bot = Parser(constants['URL'], constants['xpath_link'], constants['xpath_price'])
 now = datetime.now()
 logger.info("Парсинг посилань та цін із сайту.")
