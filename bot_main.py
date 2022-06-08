@@ -55,11 +55,11 @@ class Parser:
 
     def filling_table(self, product_data):
         def unpack_dict(key_):
-            test = []
+            unpack_list = []
             for iterator_key in product_data:
                 key = iterator_key.get(key_)
-                test.append(key)
-            return test
+                unpack_list.append(key)
+            return unpack_list
 
         for name, price, link in zip(unpack_dict('name_prod'), unpack_dict('price'), unpack_dict('link')):
             self.cursor.execute("INSERT INTO product VALUES (?,?,?)", (name, price, link))
