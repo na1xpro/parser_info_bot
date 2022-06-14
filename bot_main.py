@@ -88,7 +88,6 @@ class Parser:
                 logger.info('Був додадний новий товар')
             else:
                 logger.info('Не було додано  нового товара')
-sfa = af
 
 #
 #
