@@ -1,4 +1,3 @@
-from lxml import html
 from loguru import logger
 import requests
 from bot_constants import constants
@@ -19,7 +18,7 @@ class Parser:
         tree = fromstring(response.text)
         return tree
 
-    def parse_data(self, tree):
+    def parse_data(self, tree) -> list[dict]:
         """Парсинг данних з сайту"""
         product_list = []
         products = tree.xpath('//div[@data-cy="l-card"]')
@@ -66,7 +65,7 @@ class Parser:
             """)
         self.conn.commit()
 
-    def filling_table(self, product_data: list[dict]):
+    def filling_table(self, product_data) -> list[dict]:
         """Заповнення  данних в таблицю"""
         info = self.cursor.execute('SELECT * FROM product')
         if info.fetchone() is None:
@@ -78,15 +77,13 @@ class Parser:
         else:
             logger.info('Таблиця вже заповнена')
 
-    logger.info("Даннi були доданi до таблицi")
-
-    def revision_new_data(self, products_data: list[dict]):
+    def revision_new_data(self, products) -> list[dict]:
         """Перевірка  на актуальність данних"""
-        for products in products_data:
-            chek_link = self.cursor.execute(f"SELECT links FROM product WHERE links = '{products['link']}'")
+        for product in products:
+            chek_link = self.cursor.execute(f"SELECT links FROM product WHERE links = '{product['link']}'")
             if chek_link.fetchone() is None:
                 self.cursor.execute("""Update product set name = ?,price = ?,links = ?,currency = ?""", (
-                    products['name'], products['price'], products['link'], products['currency']))
+                    product['name'], product['price'], product['link'], product['currency']))
                 self.conn.commit()
                 logger.info('Був додадний новий товар')
             else:
